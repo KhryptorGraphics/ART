@@ -244,7 +244,7 @@ class LocalBackend(Backend):
         )
         if not tokenized_results:
             return None
-        max_tokens = max(len(result.tokens) for result in tokenized_results)
+        max_tokens = max(len(result.token_ids) for result in tokenized_results)
         # Round up max_tokens to the nearest multiple of 2048
         sequence_length = math.ceil(max_tokens / 2048) * 2048
         # Cap sequence length at the model's max sequence length
@@ -416,7 +416,9 @@ class LocalBackend(Backend):
             if isinstance(message_or_choice, dict):
                 message = message_or_choice
             else:
-                message = cast(Message, message_or_choice.message.model_dump())  # ty:ignore[possibly-missing-attribute]
+                message = cast(
+                    Message, message_or_choice.message.model_dump()
+                )  # ty:ignore[possibly-missing-attribute]
             formatted_messages.append(format_message(message))
         return header + "\n".join(formatted_messages)
 
@@ -702,9 +704,9 @@ class LocalBackend(Backend):
             num_gradient_steps = int(
                 result.pop("num_gradient_steps", estimated_gradient_steps)
             )
-            assert num_gradient_steps == estimated_gradient_steps, (
-                f"num_gradient_steps {num_gradient_steps} != estimated_gradient_steps {estimated_gradient_steps}"
-            )
+            assert (
+                num_gradient_steps == estimated_gradient_steps
+            ), f"num_gradient_steps {num_gradient_steps} != estimated_gradient_steps {estimated_gradient_steps}"
             results.append(result)
             yield {**result, "num_gradient_steps": num_gradient_steps}
             pbar.update(1)
