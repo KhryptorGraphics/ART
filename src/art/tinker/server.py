@@ -40,9 +40,7 @@ class OpenAICompatibleTinkerServer:
     port: int | None = None
     num_workers: int | None = None
     models: dict[str, str] = field(default_factory=dict)
-    _prefix_cache: LRUTrieCache = field(
-        default_factory=lambda: LRUTrieCache(max_entries=1000)
-    )
+    _prefix_cache: LRUTrieCache = field(default_factory=LRUTrieCache)
     _workers: list["Worker"] = field(default_factory=list)
     _task: asyncio.Task[None] | None = None
     _tenant_clients: dict[str, tuple[tinker.ServiceClient, TinkerRestClient]] = field(
